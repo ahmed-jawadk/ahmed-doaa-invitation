@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+@theme {
+  --font-cairo: "Cairo", system-ui, sans-serif;
+  --font-quran: "Amiri Quran", "Amiri", serif;
+
+  --color-taupe: #ece4d8;
+  --color-ivory: #f6f0e6;
+  --color-ink: #2e241d;
+  --color-sub: #5c4d41;
+  --color-sepia: #6b5444;
+  --color-silver: #c9c5be;
+  --color-silver-dark: #8c877f;
+
+  --ease-curtain: cubic-bezier(0.7, 0, 0.2, 1);
+  --ease-soft: cubic-bezier(0.22, 1, 0.36, 1);
+
+  --animate-breathe: breathe 18s ease-in-out infinite alternate;
+  --animate-cue: cue 2.2s ease-in-out infinite;
+
+  @keyframes breathe {
+    from { transform: scale(1.02) translateY(0); }
+    to { transform: scale(1.09) translateY(-1.5%); }
+  }
+  @keyframes cue {
+    0%, 100% { transform: translateY(0); opacity: 0.55; }
+    50% { transform: translateY(8px); opacity: 1; }
+  }
+}
+
+@layer base {
+  html { scroll-behavior: smooth; }
+  body {
+    @apply bg-taupe font-cairo text-ink antialiased;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-sepia);
+    outline-offset: 3px;
+  }
+}
+
+/* Scroll reveal: content is visible by default; only hidden once JS has armed it. */
+.reveal-armed {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.9s var(--ease-soft),
+    transform 0.9s var(--ease-soft);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.reveal-armed.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Frame outline draws itself */
+.frame-draw {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.frame-draw.is-drawn {
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 2.4s var(--ease-soft);
+}
+
+/* Countdown digit swap */
+.digit-enter-active,
+.digit-leave-active {
+  transition: transform 0.45s var(--ease-soft), opacity 0.45s var(--ease-soft);
+}
+.digit-enter-from { transform: translateY(-60%); opacity: 0; }
+.digit-leave-to { transform: translateY(60%); opacity: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+  .reveal-armed { opacity: 1; transform: none; }
+}
